@@ -63,29 +63,20 @@ t 5.0+ PBKDF2-HMAC-RipeMD160 boot-mode': '624Y', 'TrueCrypt 5.0+': '62XY', 'AIX 
 '6900', 'Fortigate (FortiOS)': '7000', 'OSX v10.8': '7100', 'GRUB 2': '7200', 'IPMI2 RAKP HMAC-SHA1': '7300', 'sha2\
 56crypt, SHA256(Unix)': '7400'}
 
-
-"""
-Function: isHex(singleString)
-    Check whether a string consists of only hexadecimal characters.
-"""
+#Check whether a string consists of only hexadecimal characters.
 def isHex(singleString):
     for c in singleString:
         if not c in string.hexdigits: return False
     return True
 
-"""
-Function: isAlphaDotSlash(singleString)
-    Check whether a string consists of hexadecimal characters or '.' or '/'
-"""
+#Check whether a string consists of hexadecimal characters or '.' or '/'
 def isAlphaDotSlash(singleString):
     for c in singleString:
         if not c in string.ascii_letters and not c in string.digits and not c in '.' and not c in '/': return False
     return True
 
-"""
-Function: identifyHash(singleHash)
-    Identifies a single hash string based on attributes such as character length, character type (hex, alphanum, etc.), and specific substring identifiers.
-"""
+#Identifies a single hash string based on attributes such as character length, character type (hex, alphanum, etc.), and specific substring identifiers.
+#These conditional statements are ordered specifically to address efficiency when dealing with large inputs
 def identifyHash(singleHash):
     if len(singleHash) == 32 and isHex(singleHash):
         hashDict[singleHash] = ['MD5', 'NTLM', 'MD4', 'LM', 'RAdmin v2.x', 'Haval-128', 'MD2', 'RipeMD-128', 'Tiger-128', 'Snefru-128', 'MD5(HMAC)', 'MD4(HMAC)', 'Haval-128(HMAC)', 'RipeMD-128(HMAC)', 'Tiger-128(HMAC)', \
@@ -125,8 +116,6 @@ def identifyHash(singleHash):
         hashDict[singleHash] = ['SHA-256(AuthMe)']
     elif singleHash.startswith('sha256$'):
         hashDict[singleHash] = ['SHA-256(Django)']
-    elif singleHash.startswith('sha384$'):
-        hashDict[singleHash] = ['SHA-384(Django)']
     elif singleHash.startswith('sha384$'):
         hashDict[singleHash] = ['SHA-384(Django)']
     elif singleHash.startswith('$SHA$'):
@@ -285,10 +274,11 @@ elif args.file:
     Parses a single file for possible password hashes and attempts to identify each one.  Outputs to one or multiple files depending on -hc argument.
     """
     inputFile = args.file
+    hashCount = 0
+    foundModes = list()
 
     while not os.path.isfile(inputFile):
         inputFile = raw_input("\nFile \'{0}\' not Found!\n\nHash File Path: ".format(str(inputFile)))
-
     openInputFile = open(inputFile, 'r')
     
     if not os.path.exists('HashTag'):
@@ -302,9 +292,6 @@ elif args.file:
 
     for line in openInputFile.readlines():
         identifyHash(line.strip())
-    
-    hashCount = 0
-    foundModes = list()
     
     if hashDict:
         for k, v in hashDict.iteritems():
@@ -342,7 +329,7 @@ elif args.directory:
     Potential password protected files are separated by filetype and copied using the shutil module to new folders. Outputs to one or multiple files depending on -hc argument.
     """
     inputDir = args.directory
-    while not os.path.isdir(args.directory):
+    while not os.path.isdir(inputDir):
         inputDir = raw_input("\nDirectory \'{0}\' not Found!\n\nHash Files Directory: ".format(str(inputDir)))
 
     if not os.path.exists('HashTag'):
@@ -440,5 +427,4 @@ elif args.directory:
                 print '{0}/{1} hashes have been identified and written.'.format(notifyCount,validHashCount)
 
     print '\n{0} hashes have been identified and written to separate files based on hash type.\nA full list has been written to file {1}'.format(notifyCount, outputFile.name)
-else:
-    print 'WEIRD ERROR WITH ARGS'
+    
