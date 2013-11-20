@@ -11,6 +11,10 @@ Description:    HashTag.py is a python script written to parse and identify pass
                 file (-f), and traversing subdirectories to locate files which contain hashes  and parse/identify them (-d).
                 Many common hash types are supported by the CPU and GPU cracking tool Hashcat.  Using an additional 
                 argument (-hc) hashcat modes will be included in the output file(s).
+
+Copyright (c) 2013, Smeege Sec (http://www.smeegesec.com)
+All rights reserved.
+Please see the attached LICENSE file for additional licensing information.
 """
 import argparse
 import mimetypes
