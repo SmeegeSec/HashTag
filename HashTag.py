@@ -185,8 +185,6 @@ def identifyHash(singleHash):
                 if not singleHash.split(':')[2] == 'aad3b435b51404eeaad3b435b51404ee' and not singleHash.split(':')[2] == 'aad3b435b51404eeaad3b435b51404ee'.upper():
                     hashDict[singleHash.split(':')[2]] = 'LM'
             except Exception as e:
-                print 'Error parsing LM and NTLM hashes from Domain Cached Credentials/mscash hash'
-                print e
                 pass
         elif singleHash.count(':') == 2 and '@' in singleHash:
             hashDict[singleHash] = ['Lastpass']
@@ -257,6 +255,7 @@ if args.singleHash:
     """
     Single Hash Identification: HashTag.py -sh hash
     Prints to screen all possible hash types and their corresponding hashcat mode if one exists.
+    Note: When identifying a single hash on *nix operating systems remember to use single quotes to prevent interpolation. (e.g. python HashTag.py -sh '$1$abc$12345')
     """
     identifyHash(args.singleHash)
     if len(hashDict[args.singleHash]):
